@@ -4,7 +4,7 @@ $user_id = $_REQUEST["id"];
 
 include ("connections.php");
 
-$query_delete = mysqli_query($connections, "DELETE FROM mytbl WHERE id='$user_id'");
+$query_delete = mysqli_query($connections, "SELECT * FROM mytbl WHERE id='$user_id'");
 
 while ($row_delete = mysqli_fetch_assoc($query_delete)) {
 
@@ -17,7 +17,7 @@ while ($row_delete = mysqli_fetch_assoc($query_delete)) {
    $db_contact = $row_delete['contact'];
 
 }
-   echo "<h1> Are you sure you want to delete $db_name ? </h1>"
+   echo "<h1> Are you sure you want to delete $db_name ? </h1>";
 
 
 ?>
