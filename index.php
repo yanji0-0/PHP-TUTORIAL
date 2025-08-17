@@ -1,6 +1,10 @@
 <?php
-$name = $address = $email = $section = $contact = "";
-$nameErr = $addressErr = $emailErr = $sectionErr = $contactErr = "";
+
+
+    include ("connections.php");
+
+$name = $address = $email = $section = $contact = $password = $cpassword = "";
+$nameErr = $addressErr = $emailErr = $sectionErr = $contactErr = $passwordErr = $cpasswordErr = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -35,7 +39,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $contact = htmlspecialchars($_POST["contact"]);
     }
+
+    if (empty($_POST["password"])) {
+        $passwordErr = "Password is required";
+    } else {
+        $password = htmlspecialchars($_POST["password"]);
+    }
+
+    if (empty($_POST["cpassword"])) {
+        $cpasswordErr = "Confirm Password is required";
+    } else{
+        $cpassword = htmlspecialchars($_POST["cpassword"]);
+    }
+
+
+
+if ($name && $address && $email && $section && $contact && $password && $cpassword) {
+
+    $check_email = mysqli_query($connections, "SELECT * FROM mytbl WHERE email='$email'");
+
+    $check_email_row = mysqli_num_rows($check_email);
+
+    if ($check_email_row > 0) {
+
+        $emailErr = "Email is already registered!";
+        
+    }else{
+         
+        $query = mysqli_query($connections, "INSERT INTO mytbl (name, address, email, section, contact, password, account_type) VALUES ('$name', '$address', '$email', '$section', '$contact', '$cpassword', '2')");
+        
+        echo "<script language='javascript'>alert('New record has been inserted!')</script>";
+        echo "<script>window.location.href='index.php';</script>";
+
+    }
+
+   
+
 }
+}
+
 ?>
 
 <style>
@@ -44,22 +86,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 </style>
 
+<br>
+
+<?php include("nav.php"); ?>
+
+<br>
+<br>
+
 <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
 
-    <input type="text" name="name" value="<?php echo $name; ?>" placeholder="Complete Name"><br>
+    Name: <input type="text" name="name" value="<?php echo $name; ?>" placeholder="Complete Name"><br>
     <span class="error"><?php echo $nameErr; ?></span><br>
 
-    <input type="text" name="address" value="<?php echo $address; ?>" placeholder="Complete Address"><br>
+    Address: <input type="text" name="address" value="<?php echo $address; ?>" placeholder="Complete Address"><br>
     <span class="error"><?php echo $addressErr; ?></span><br>
 
-    <input type="email" name="email" value="<?php echo $email; ?>" placeholder="Email Address"><br>
+    Email: <input type="email" name="email" value="<?php echo $email; ?>" placeholder="Email Address"><br>
     <span class="error"><?php echo $emailErr; ?></span><br>
 
-    <input type="text" name="section" value="<?php echo $section; ?>" placeholder="Section"><br>
+    Section: <input type="text" name="section" value="<?php echo $section; ?>" placeholder="Section"><br>
     <span class="error"><?php echo $sectionErr; ?></span><br>
 
-    <input type="text" name="contact" value="<?php echo $contact; ?>" placeholder="Contact"><br>
+    Contact: <input type="text" name="contact" value="<?php echo $contact; ?>" placeholder="Contact"><br>
     <span class="error"><?php echo $contactErr; ?></span><br>
+
+    Password: <input type="password" name="password" value="<?php echo $password; ?>" placeholder="Password"><br>
+    <span class="error"><?php echo $passwordErr; ?></span><br>
+
+    Confirm Password: <input type="password" name="cpassword" value="<?php echo $cpassword; ?>" placeholder="Confirm Password"><br>
+    <span class="error"><?php echo $cpasswordErr; ?></span><br>
 
     <input type="submit" value="Submit">
 </form>
@@ -68,16 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <?php
 
-include ("connections.php");
 
-if ($name && $address && $email && $section && $contact) {
-
-    $query = mysqli_query($connections, "INSERT INTO mytbl(name, address, email, section, contact) VALUES('$name', '$address', '$email', '$section', '$contact')");
-    
-    echo "<script languange='javascript'>alert('New Record has been inserted!');</script>";
-    echo "<script>window.location.href='index.php';</script>";
-
-}
 
 $view_query = mysqli_query($connections, "SELECT * FROM mytbl");
 
@@ -127,5 +173,28 @@ while($row = mysqli_fetch_assoc($view_query)) {
 }
 
 echo "</table>";
+
+?>
+
+<hr>
+
+<?php
+
+$Paul = "Paul";
+$Mica = "Mica";
+$Kaye = "Kaye";
+$MJ ="MJ";
+$Marian = "Marian";
+$Justine = "Justine";
+
+
+$names = array("Kaye","Paul","Mica", "MJ", "Marian", "Justine");
+
+foreach($names as $display_names){
+
+    echo $display_names . "<br>";
+
+
+}
 
 ?>
